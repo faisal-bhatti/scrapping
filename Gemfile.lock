@@ -298,8 +298,11 @@ GEM
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    wait_until (0.1.2)
     warden (1.2.4)
       rack (>= 1.0)
+    watir-webdriver (0.9.1)
+      selenium-webdriver (>= 2.46.2)
     websocket (1.2.2)
     will_paginate (3.0.7)
     xpath (2.0.0)
@@ -344,6 +347,8 @@ DEPENDENCIES
   therubyracer
   twitter-bootstrap-rails
   uglifier (>= 1.0.3)
+  wait_until
+  watir-webdriver
   will_paginate (~> 3.0.5)
 
 BUNDLED WITH

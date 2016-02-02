@@ -2,8 +2,8 @@ class DashboardController < ApplicationController
   def new
   	require 'headless'
   	require "selenium-webdriver"
-  	head = Headless.new
-  	head.start
+  	# head = Headless.new
+  	# head.start
   	
   	driver = Selenium::WebDriver.for :phantomjs, :args => ['--ignore-ssl-errors=true']
     driver.navigate.to "https://cignaforhcp.cigna.com/web/secure/chcp/windowmanager#tab-hcp.pg.patientsearch$1"
@@ -18,12 +18,11 @@ class DashboardController < ApplicationController
     element.send_keys "Empclaims100" 
     element.submit
     # driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
-    wait = Selenium::WebDriver::Wait.new(:timeout => 10)
-    wait.until 
-    {  
+    wait = Selenium::WebDriver::Wait.new(:timeout => 3)
+    wait.until do  
       href_search = driver.find_elements(:class,'patients')
       href_search[1].click
-    }
+    end
 
     member_id = driver.find_element(:name, 'memberDataList[0].memberId')
     member_id.send_keys "102216035"
@@ -41,10 +40,10 @@ class DashboardController < ApplicationController
     ee = driver.find_elements(:class,'btn-submit-form-patient-search')[0]
     ee.submit
 
-    wait.until {
+    wait.until do
       link = driver.find_elements(:class,'oep-managed-link')[5]
       link.click
-    }
+    end
 
     puts driver.title
     tables = driver.find_elements(:class,'collapseTable')
@@ -56,7 +55,7 @@ class DashboardController < ApplicationController
     @table6 = tables[5].attribute('innerHTML').gsub("\t","").gsub("\n","")
 
     driver.quit	
-    head.destroy
+    # head.destroy
   end
 
   def index
