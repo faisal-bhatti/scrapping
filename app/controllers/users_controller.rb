@@ -1,13 +1,12 @@
 class UsersController < ApplicationController
 
-	 def search_data
-  	require 'headless'
+	def search_data
   	require "selenium-webdriver"
-  	
-  	head = Headless.new
-  	head.start
-  	
-  	driver = Selenium::WebDriver.for :firefox
+    # head = Headless.new
+    # head.start
+    
+    driver = Selenium::WebDriver.for :phantomjs, :args => ['--ignore-ssl-errors=true']
+    # driver = Selenium::WebDriver.for :firefox
     driver.navigate.to "https://cignaforhcp.cigna.com/web/secure/chcp/windowmanager#tab-hcp.pg.patientsearch$1"
     
     username = driver.find_element(:name, 'username')
@@ -17,35 +16,35 @@ class UsersController < ApplicationController
     password.send_keys "Empclaims100"
 
     element = driver.find_element(:id, 'button1')
-    # element.send_keys "Empclaims100" 
+    element.send_keys "Empclaims100" 
     element.submit
     # driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+    wait = Selenium::WebDriver::Wait.new(:timeout => 10)
+    
     sleep(3)
-    #tab-hcp.pg.patientsearch
     href_search = driver.find_elements(:class,'patients')
     href_search[1].click
-    sleep(1)
-    member_id = driver.find_element(:name, 'memberDataList[0].memberId')
-    member_id.send_keys params[:user][:patient_id]
-
-    dob = driver.find_element(:name, 'memberDataList[0].dobDate')
-    dob.send_keys params[:user][:dob]
-
-    first_name = driver.find_element(:name, 'memberDataList[0].firstName')
-    first_name.send_keys params[:user][:first_name]
-
-    last_name = driver.find_element(:name, 'memberDataList[0].lastName')
-    last_name.send_keys params[:user][:last_name]
     
-
+    
+    sleep(1)  
+    member_id = driver.find_element(:name, 'memberDataList[0].memberId')
+    member_id.send_keys "102216035"
+    dob = driver.find_element(:name, 'memberDataList[0].dobDate')
+    dob.send_keys "1/9/1957"
+    first_name = driver.find_element(:name, 'memberDataList[0].firstName')
+    first_name.send_keys "DEVIKA"
+    last_name = driver.find_element(:name, 'memberDataList[0].lastName')
+    last_name.send_keys "SHAH"
     ee = driver.find_elements(:class,'btn-submit-form-patient-search')[0]
     ee.submit
 
-    sleep(3)
+    sleep(1)
     link = driver.find_elements(:class,'oep-managed-link')[5]
     link.click
-    sleep(3)
+    
+
     # puts driver.title
+    sleep(2)
     tables = driver.find_elements(:class,'collapseTable')
     @table1 = tables[0].attribute('innerHTML').gsub("\t","").gsub("\n","")
     @table2 = tables[1].attribute('innerHTML').gsub("\t","").gsub("\n","")
@@ -54,9 +53,8 @@ class UsersController < ApplicationController
     @table5 = tables[4].attribute('innerHTML').gsub("\t","").gsub("\n","")
     @table6 = tables[5].attribute('innerHTML').gsub("\t","").gsub("\n","")
 
-    driver.quit	
-    head.destroy
-
+    driver.quit 
+    # head.destroy
     # redirect_to users_path
   end
 end
